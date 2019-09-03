@@ -1,0 +1,48 @@
+version: "3.4"
+
+networks:
+  metadata_service:
+  repo_rangler_proxy:
+    external:
+      name: repo_rangler_proxy
+
+volumes:
+  metadata_service:
+
+services:
+  metadata_service_nginx:
+    container_name: reporangler_metadata_service_nginx
+    image: reporangler/metadata_service_nginx
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    networks:
+      - repo_rangler_proxy
+      - metadata_service
+    environment:
+      - VIRTUAL_HOST=metadata.reporangler.develop
+
+  metadata_service_phpfpm:
+    container_name: reporangler_metadata_service_phpfpm
+    image: reporangler/metadata_service_phpfpm
+    build:
+      context: .
+      dockerfile: docker/phpfpm/Dockerfile
+    networks:
+      - metadata_service
+    volumes:
+      - $PWD:/www
+    env_file:
+      - $PWD/.env
+
+  metadata_service_postgres:
+    container_name: reporangler_metadata_service_postgres
+    image: postgres:alpine
+    ports:
+      - 5431:5432
+    networks:
+      - metadata_service
+    volumes:
+      - metadata_service:/var/lib/postgresql/data
+    env_file:
+      - $PWD/.env
