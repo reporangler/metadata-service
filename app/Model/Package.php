@@ -3,7 +3,7 @@ namespace App\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Packages extends Model
+class Package extends Model
 {
     /**
      * The attributes that should be cast to native types.
