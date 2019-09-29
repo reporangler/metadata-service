@@ -20,7 +20,7 @@ $router->group(['middleware' => ['cors']], function() use ($router) {
     $router->options('{path:.*}', 'DefaultController@cors');
 
     // Pass all requests through the auth layer
-    $router->group(['middleware' => ['auth']], function() use ($router) {
+    $router->group(['middleware' => ['auth:token']], function() use ($router) {
         $router->get('/packages', 'DefaultController@packages');
         $router->post('/packages', 'DefaultController@create');
     });

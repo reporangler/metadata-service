@@ -87,6 +87,7 @@ $app->register(RepoRangler\Providers\TokenServiceProvider::class);
 */
 
 $app->configure('app');
+$app->configure('auth');
 $app->configure('database');
 $app->configure('logging');
 
