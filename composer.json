@@ -13,7 +13,7 @@
     "require": {
         "php": ">=7.1.3",
         "laravel/lumen-framework": "5.8.*",
-        "reporangler/lib-reporangler": "^1.0"
+        "reporangler/lib-reporangler": "^1.1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",

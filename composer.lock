@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8135881935d504eac9c6210f081aef59",
+    "content-hash": "f536f5be5d08504140a3f6eb085954bf",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -2186,11 +2186,11 @@
         },
         {
             "name": "reporangler/lib-reporangler",
-            "version": "1.0.5",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reporangler/lib-reporangler",
-                "reference": "eb36e02dd2244b18f45d18c3db6950f2018cc0a6"
+                "reference": "6fe88c0ecaad1c680c7bbaebc753b23c475a070d"
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.3",
@@ -2221,7 +2221,7 @@
                 "php",
                 "reporangler"
             ],
-            "time": "2019-09-08T22:25:58+00:00"
+            "time": "2019-09-29T23:57:00+00:00"
         },
         {
             "name": "symfony/console",
@@ -3560,16 +3560,16 @@
         },
         {
             "name": "mockery/mockery",
-            "version": "1.2.3",
+            "version": "1.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mockery/mockery.git",
-                "reference": "4eff936d83eb809bde2c57a3cea0ee9643769031"
+                "reference": "b3453f75fd23d9fd41685f2148f4abeacabc6405"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mockery/mockery/zipball/4eff936d83eb809bde2c57a3cea0ee9643769031",
-                "reference": "4eff936d83eb809bde2c57a3cea0ee9643769031",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/b3453f75fd23d9fd41685f2148f4abeacabc6405",
+                "reference": "b3453f75fd23d9fd41685f2148f4abeacabc6405",
                 "shasum": ""
             },
             "require": {
@@ -3583,7 +3583,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "1.2.x-dev"
                 }
             },
             "autoload": {
@@ -3621,7 +3621,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2019-08-07T15:01:07+00:00"
+            "time": "2019-09-30T08:30:27+00:00"
         },
         {
             "name": "myclabs/deep-copy",
