@@ -26,7 +26,7 @@ class DefaultController extends BaseController
     {
         $user = Auth::user();
 
-        $packageGroups = Arr::pluck($user->package_groups, 'name');
+        $packageGroups = array_keys($user->package_groups);
 
         $packages = Package::where('repository_type', $user->repository_type)->whereIn('package_group', $packageGroups)->get();
 
