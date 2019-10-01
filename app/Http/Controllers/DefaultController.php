@@ -22,13 +22,15 @@ class DefaultController extends BaseController
         return new JsonResponse(["statusCode" => 200, "service" => config('app.metadata_base_url')], 200);
     }
 
-    public function packages(): JsonResponse
+    public function packages(Request $request): JsonResponse
     {
         $user = Auth::user();
 
+        $repositoryType = $request->headers->get('reporangler-repository-type');
+
         $packageGroups = array_keys($user->package_groups);
 
-        $packages = Package::where('repository_type', $user->repository_type)->whereIn('package_group', $packageGroups)->get();
+        $packages = Package::where('repository_type', $repositoryType)->whereIn('package_group', $packageGroups)->get();
 
         return new JsonResponse($packages, 200);
     }
