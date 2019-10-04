@@ -1,5 +1,5 @@
 <?php
-use \Illuminate\Http\JsonResponse;
+use \RepoRangler\Entity\RepositoryType;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +21,8 @@ $router->group(['middleware' => ['cors']], function() use ($router) {
 
     // Pass all requests through the auth layer
     $router->group(['middleware' => ['auth:token']], function() use ($router) {
-        $router->get('/packages', 'DefaultController@packages');
-        $router->post('/packages', 'DefaultController@create');
+        $pattern = RepositoryType::PATTERN;
+        $router->get("/packages/{repository_type:$pattern}", 'DefaultController@packages');
+        $router->post("/packages/{repository_type:$pattern}", 'DefaultController@create');
     });
 });
