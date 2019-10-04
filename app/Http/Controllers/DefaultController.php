@@ -3,59 +3,65 @@
 namespace App\Http\Controllers;
 
 use App\Model\Package;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class DefaultController extends BaseController
 {
-    public function cors($args): JsonResponse
+    public function cors(): JsonResponse
     {
         return $this->healthz();
     }
 
     public function healthz(): JsonResponse
     {
-        return new JsonResponse(["statusCode" => 200, "service" => config('app.metadata_base_url')], 200);
+        return new JsonResponse(["statusCode" => 200, "service" => config('app.metadata_base_url')]);
     }
 
-    public function packages(Request $request): JsonResponse
+    public function packages(Request $request, string $repository_type): JsonResponse
     {
-        $user = Auth::user();
-
-        $repositoryType = $request->headers->get('reporangler-repository-type');
+        $user = Auth::guard('token')->user();
 
         $packageGroups = array_keys($user->package_groups);
 
-        $packages = Package::where('repository_type', $repositoryType)->whereIn('package_group', $packageGroups)->get();
+        $packages = Package::where('repository_type', $repository_type)->whereIn('package_group', $packageGroups)->get();
 
-        return new JsonResponse($packages, 200);
+        return new JsonResponse($packages);
     }
 
-    public function create(Request $request): JsonResponse
+    public function create(Request $request, string $repository_type): JsonResponse
     {
-        $repositoryType = $request->headers->get('reporangler-repository-type');
+        $user = Auth::guard('token')->user();
 
         $schema = [
-            'package_group' => 'required|string',
             'name' => 'required|string',
             'version' => 'required|string',
+            'package_group' => 'required|string',
             'definition' => 'required|array',
         ];
 
         $data = $this->validate($request, $schema);
 
-        $package = new Package();
-        $package->name = $data['name'];
-        $package->version = $data['version'];
-        $package->repository_type = $repositoryType;
-        $package->package_group = $data['package_group'];
-        $package->definition = $data['definition'];
+        $attributes = [
+            'name' => $data['name'],
+            'version' => $data['version'],
+            'repository_type' => $repository_type,
+            'package_group' => $data['package_group'],
+        ];
+
+        $package = Package::where($attributes)->first();
+
+        if($package){
+            $package->definition = $data['definition'];
+        }else{
+            $attributes['definition'] = $data['definition'];
+            $package = new Package($attributes);
+        }
+
         $package->save();
 
-        return new JsonResponse($package, 200);
+        return new JsonResponse($package);
     }
 }
