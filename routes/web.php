@@ -1,5 +1,5 @@
 <?php
-use \RepoRangler\Entity\RepositoryType;
+use \RepoRangler\Entity\Repository;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,8 +21,18 @@ $router->group(['middleware' => ['cors']], function() use ($router) {
 
     // Pass all requests through the auth layer
     $router->group(['middleware' => ['auth:token']], function() use ($router) {
-        $pattern = RepositoryType::PATTERN;
-        $router->get("/packages/{repository_type:$pattern}", 'DefaultController@packages');
-        $router->post("/packages/{repository_type:$pattern}", 'DefaultController@create');
+        $router->group(['prefix' => 'packages'], function() use ($router) {
+            $pattern = Repository::PATTERN;
+
+            $router->get("/{repository:$pattern}", 'PackagesController@packages');
+            $router->post("/{repository:$pattern}", 'PackagesController@create');
+        });
+
+        $router->group(['prefix' => 'repository'], function() use ($router) {
+            $router->get('/',               'RepositoryController@getList');
+            $router->post('/',              'RepositoryController@create');
+            $router->put('/{id:[0-9]+}',    'RepositoryController@update');
+            $router->delete('/{id:[0-9]+}', 'RepositoryController@deleteById');
+        });
     });
 });
