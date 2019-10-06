@@ -29,10 +29,13 @@ $router->group(['middleware' => ['cors']], function() use ($router) {
         });
 
         $router->group(['prefix' => 'repository'], function() use ($router) {
-            $router->get('/',               'RepositoryController@getList');
-            $router->post('/',              'RepositoryController@create');
-            $router->put('/{id:[0-9]+}',    'RepositoryController@update');
-            $router->delete('/{id:[0-9]+}', 'RepositoryController@deleteById');
+            $pattern = Repository::PATTERN;
+
+            $router->get('/',                       'RepositoryController@getList');
+            $router->get("/{repository:$pattern}",  'RepositoryController@getByName');
+            $router->post('/',                      'RepositoryController@create');
+            $router->put('/{id:[0-9]+}',            'RepositoryController@update');
+            $router->delete('/{id:[0-9]+}',         'RepositoryController@deleteById');
         });
     });
 });

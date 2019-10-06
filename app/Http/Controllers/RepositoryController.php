@@ -16,6 +16,11 @@ class RepositoryController extends BaseController
         return new JsonResponse($list, count($list) ? 200 : 404);
     }
 
+    public function getByName(string $repository)
+    {
+        return new JsonResponse(Repository::where('name', $repository)->firstOrFail());
+    }
+
     public function create(Request $request)
     {
         $schema = [
