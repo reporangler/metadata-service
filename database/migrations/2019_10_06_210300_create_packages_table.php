@@ -17,10 +17,11 @@ class CreatePackagesTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('version');
-            $table->string('repository_type');
+            $table->integer('repository_id');
+            $table->foreign('repository_id')->references('id')->on('repository');
             $table->string('package_group');
             $table->jsonb('definition');
-            $table->unique(['name', 'version', 'repository_type', 'package_group']);
+            $table->unique(['name', 'version', 'repository_id', 'package_group']);
             $table->timestamps();
         });
     }
