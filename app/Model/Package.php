@@ -1,8 +1,8 @@
 <?php
 namespace App\Model;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use RepoRangler\Entity\Repository;
 
 class Package extends Model
 {
@@ -19,6 +19,13 @@ class Package extends Model
 
     public function repository()
     {
-        return $this->hasOne(Repository::class);
+        return $this->belongsTo(Repository::class);
+    }
+
+    static public function whereRepository(string $name)
+    {
+        return Package::whereHas('repository', function (Builder $query) use ($name) {
+            $query->where('name', $name);
+        });
     }
 }
