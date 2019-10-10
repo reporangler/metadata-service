@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
-class PackagesController extends BaseController
+class PackageController extends BaseController
 {
     public function packages(Request $request, string $repository): JsonResponse
     {
