@@ -1,5 +1,6 @@
 <?php
-use \RepoRangler\Entity\Repository;
+use RepoRangler\Entity\Repository;
+use RepoRangler\Entity\PackageGroup;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,8 +30,10 @@ $router->group(['middleware' => ['cors']], function() use ($router) {
         });
 
         $router->group(['prefix' => 'package-group'], function() use ($router) {
-            $router->get('/name/{name:[a-z\-\.]+}', 'PackageGroupController@findByName');
-            $router->get('/id/{id:[0-9]+}',         'PackageGroupController@findById');
+            $pattern = PackageGroup::PATTERN;
+
+            $router->get("/{name:$pattern}", 'PackageGroupController@findByName');
+            $router->get('/{id:[0-9]+}',         'PackageGroupController@findById');
             $router->get('/',                       'PackageGroupController@getList');
             $router->post('/',                      'PackageGroupController@create');
             $router->put('/',                       'PackageGroupController@update');
