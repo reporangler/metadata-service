@@ -22,7 +22,7 @@ $router->group(['middleware' => ['cors']], function() use ($router) {
 
     // Pass all requests through the auth layer
     $router->group(['middleware' => ['auth:token']], function() use ($router) {
-        $router->group(['prefix' => 'packages'], function() use ($router) {
+        $router->group(['prefix' => 'package'], function() use ($router) {
             $pattern = Repository::PATTERN;
 
             $router->get("/{repository:$pattern}", 'PackageController@packages');
@@ -32,12 +32,12 @@ $router->group(['middleware' => ['cors']], function() use ($router) {
         $router->group(['prefix' => 'package-group'], function() use ($router) {
             $pattern = PackageGroup::PATTERN;
 
-            $router->get("/{name:$pattern}", 'PackageGroupController@findByName');
-            $router->get('/{id:[0-9]+}',         'PackageGroupController@findById');
-            $router->get('/',                       'PackageGroupController@getList');
-            $router->post('/',                      'PackageGroupController@create');
-            $router->put('/',                       'PackageGroupController@update');
-            $router->delete('/{id:[0-9]+}',         'PackageGroupController@deleteById');
+            $router->get("/{name:$pattern}",    'PackageGroupController@findByName');
+            $router->get('/{id:[0-9]+}',        'PackageGroupController@findById');
+            $router->get('/',                   'PackageGroupController@getList');
+            $router->post('/',                  'PackageGroupController@create');
+            $router->put('/',                   'PackageGroupController@update');
+            $router->delete('/{id:[0-9]+}',     'PackageGroupController@deleteById');
         });
 
         $router->group(['prefix' => 'repository'], function() use ($router) {
