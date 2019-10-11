@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Package extends Model
 {
+    protected $table = 'package';
+
     protected $fillable = ['name', 'version', 'repository_id', 'package_group', 'definition'];
 
     /**
