@@ -13,7 +13,10 @@ class RepositoryController extends BaseController
     {
         $list = Repository::get();
 
-        return new JsonResponse($list, count($list) ? 200 : 404);
+        return new JsonResponse([
+            'count' => count($list),
+            'data' => $list
+        ]);
     }
 
     public function getByName(string $repository)

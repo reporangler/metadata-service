@@ -27,7 +27,7 @@ class PackageGroupController extends BaseController
         return new JsonResponse([
             'count' => count($list),
             'data' => $list
-        ], count($list) ? 200 : 404);
+        ]);
     }
 
     public function create(Request $request): JsonResponse
