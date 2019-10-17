@@ -32,9 +32,9 @@ $router->group(['middleware' => ['cors']], function() use ($router) {
         $router->group(['prefix' => 'package-group'], function() use ($router) {
             $pattern = PackageGroup::PATTERN;
 
-            $router->get("/{name:$pattern}",    'PackageGroupController@findByName');
-            $router->get('/{id:[0-9]+}',        'PackageGroupController@findById');
             $router->get('/',                   'PackageGroupController@getList');
+            $router->get("/{name:$pattern}",    'PackageGroupController@getByName');
+            $router->get('/{id:[0-9]+}',        'PackageGroupController@getById');
             $router->post('/',                  'PackageGroupController@create');
             $router->put('/',                   'PackageGroupController@update');
             $router->delete('/{id:[0-9]+}',     'PackageGroupController@deleteById');
@@ -44,6 +44,7 @@ $router->group(['middleware' => ['cors']], function() use ($router) {
             $pattern = Repository::PATTERN;
 
             $router->get('/',                       'RepositoryController@getList');
+            $router->get('/{id:[0-9]+}',            'RepositoryController@getById');
             $router->get("/{repository:$pattern}",  'RepositoryController@getByName');
             $router->post('/',                      'RepositoryController@create');
             $router->put('/{id:[0-9]+}',            'RepositoryController@update');

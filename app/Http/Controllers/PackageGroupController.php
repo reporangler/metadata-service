@@ -10,12 +10,12 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class PackageGroupController extends BaseController
 {
-    public function findByName(string $name): JsonResponse
+    public function getByName(string $name): JsonResponse
     {
         return new JsonResponse(PackageGroup::where('name', $name)->firstOrFail(),200);
     }
 
-    public function findById(int $id): JsonResponse
+    public function getById(int $id): JsonResponse
     {
         return new JsonResponse(PackageGroup::findOrFail($id),200);
     }
