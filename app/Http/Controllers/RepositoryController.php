@@ -21,7 +21,7 @@ class RepositoryController extends BaseController
 
     public function getById(int $id)
     {
-        return new JsonResponse(Repository::find($id)->firstOrFail());
+        return new JsonResponse(Repository::findOrFail($id));
     }
 
     public function getByName(string $repository)
