@@ -7,13 +7,13 @@ use Illuminate\Http\JsonResponse;
 
 class DefaultController extends BaseController
 {
-    public function cors(): JsonResponse
+    public function healthz()
     {
-        return $this->healthz();
+        return new JsonResponse(["statusCode" => 200, "service" => config('app.metadata_base_url')], 200);
     }
 
-    public function healthz(): JsonResponse
+    public function cors()
     {
-        return new JsonResponse(["statusCode" => 200, "service" => config('app.metadata_base_url')]);
+        $this->healthz();
     }
 }
