@@ -4,7 +4,7 @@ This docker service will reply with information about packages the user is allow
 
 # Installation
 
-You should be able to resolve `metadata.reporangler.develop` locally on your computer. 
+You should be able to resolve `metadata.reporangler.localhost` locally on your computer. 
 Maybe you need to edit `/etc/hosts` file or add to dns?
 
 Run the following commands:
@@ -26,13 +26,13 @@ docker run --rm --network=${network} --name metadata_service_nginx -p ${port}:80
 docker ps
 
 # Query the container to see what it replies
-curl -vvv http://metadata.reporangler.develop:${port}/healthz
+curl -vvv http://metadata.reporangler.localhost:${port}/healthz
 ```
 
 It should output
 ```
 > GET /healthz HTTP/1.1
-> Host: metadata.reporangler.develop
+> Host: metadata.reporangler.localhost
 > User-Agent: curl/7.54.0
 > Accept: */*
 > 
@@ -44,13 +44,13 @@ It should output
 < X-Powered-By: PHP/7.3.4
 < Cache-Control: no-cache, private
 < Date: Sat, 31 Aug 2019 17:32:06 GMT
-< Access-Control-Allow-Origin: *.reporangler.develop
+< Access-Control-Allow-Origin: *.reporangler.localhost
 < Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS
 < Access-Control-Allow-Credentials: true
 < Access-Control-Allow-Headers: *
 < 
-* Connection #0 to host metadata.reporangler.develop left intact
-{"statusCode":200,"service":"http:\/\/metadata.reporangler.develop"} 
+* Connection #0 to host metadata.reporangler.localhost left intact
+{"statusCode":200,"service":"http:\/\/metadata.reporangler.localhost"} 
 ```
 
 # Usage
