@@ -8,7 +8,7 @@ class Package extends Model
 {
     protected $table = 'package';
 
-    protected $fillable = ['name', 'version', 'repository_id', 'package_group', 'definition'];
+    protected $fillable = ['name', 'version', 'repository_id', 'package_group', 'definition', 'storage_key', 'package_type'];
 
     /**
      * The attributes that should be cast to native types.

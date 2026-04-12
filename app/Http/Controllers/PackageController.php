@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Model\Package;
 use App\Model\Repository;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 
@@ -13,18 +12,18 @@ class PackageController extends BaseController
 {
     public function packages(Request $request, string $repository): JsonResponse
     {
-        $user = Auth::guard('token')->user();
-
-        $packageGroups = array_keys($user->package_groups);
+        $user = $request->user();
 
         $query = Package::whereRepository($repository);
 
         // Filter by user's accessible package groups if not admin
-        if (!$user->is_admin_user && !empty($packageGroups)) {
-            $query->whereIn('package_group', $packageGroups);
-        } elseif (!$user->is_admin_user && empty($packageGroups)) {
-            // Non-admin with no groups can only see public packages
-            $query->where('package_group', 'public');
+        if ($user && !$user->is_admin_user) {
+            $packageGroups = array_keys($user->package_groups ?? []);
+            if (!empty($packageGroups)) {
+                $query->whereIn('package_group', $packageGroups);
+            } else {
+                $query->where('package_group', 'public');
+            }
         }
 
         $packages = $query->get();
@@ -35,16 +34,30 @@ class PackageController extends BaseController
         ]);
     }
 
+    public function packagesByName(Request $request, string $repository, string $name): JsonResponse
+    {
+        $name = urldecode($name);
+
+        $packages = Package::whereRepository($repository)
+            ->where('name', $name)
+            ->get();
+
+        return new JsonResponse([
+            'count' => count($packages),
+            'data' => $packages,
+        ]);
+    }
+
     public function create(Request $request, string $repository): JsonResponse
     {
-        $schema = [
+        $data = $request->validate([
             'name' => 'required|string',
             'version' => 'required|string',
             'package_group' => 'required|string',
             'definition' => 'required|array',
-        ];
-
-        $data = $request->validate($schema);
+            'storage_key' => 'nullable|string',
+            'package_type' => 'nullable|string',
+        ]);
 
         $attributes = [
             'name' => $data['name'],
@@ -54,12 +67,16 @@ class PackageController extends BaseController
 
         $package = Package::whereRepository($repository)->where($attributes)->first();
 
-        if($package){
+        if ($package) {
             $package->definition = $data['definition'];
+            if (isset($data['storage_key'])) $package->storage_key = $data['storage_key'];
+            if (isset($data['package_type'])) $package->package_type = $data['package_type'];
             $package->save();
-        }else{
+        } else {
             $repo = Repository::where('name', $repository)->firstOrFail();
             $attributes['definition'] = $data['definition'];
+            if (isset($data['storage_key'])) $attributes['storage_key'] = $data['storage_key'];
+            if (isset($data['package_type'])) $attributes['package_type'] = $data['package_type'];
             $package = new Package($attributes);
             $package->repository()->associate($repo);
             $package->save();

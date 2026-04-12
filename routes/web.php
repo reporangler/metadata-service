@@ -17,6 +17,7 @@ Route::middleware(['cors', 'auth:token'])->group(function () {
     Route::prefix('package')->group(function () use ($repoPattern) {
         Route::get('/{repository}', [PackageController::class, 'packages'])->where('repository', $repoPattern);
         Route::post('/{repository}', [PackageController::class, 'create'])->where('repository', $repoPattern);
+        Route::get('/{repository}/by-name/{name}', [PackageController::class, 'packagesByName'])->where(['repository' => $repoPattern, 'name' => '.+']);
         Route::delete('/{repository}/{id}', [PackageController::class, 'deleteById'])->where(['repository' => $repoPattern, 'id' => '[0-9]+']);
     });
 
