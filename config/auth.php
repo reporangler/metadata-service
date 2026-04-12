@@ -6,6 +6,7 @@ return [
     ],
 
     'guards' => [
-        'token' => ['driver' => 'token'],
+        'repo'  => ['driver' => 'custom-repo'],
+        'token' => ['driver' => 'custom-token'],
     ]
 ];
