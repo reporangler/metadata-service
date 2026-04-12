@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
@@ -27,8 +27,6 @@ class Handler extends ExceptionHandler
 
     /**
      * Report or log an exception.
-     *
-     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
      * @param  \Exception $exception
      * @return void
@@ -81,7 +79,7 @@ class Handler extends ExceptionHandler
             $response['message'] = $message;
         }
 
-        if(config('app.debug') == "true"){
+        if(config('app.debug') === true){
             $response["stack"] = explode("\n",$exception->getTraceAsString());
         }else{
             $response["stack"] = "Disabled: Production Mode";

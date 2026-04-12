@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
 use Illuminate\Http\Request;
-use Illuminate\Auth\RequestGuard;
 
 class Authenticate
 {
@@ -37,7 +36,7 @@ class Authenticate
      */
     public function handle(Request $request, Closure $next, $guard = null)
     {
-        if(!$this->auth->guard($guard)->user()){
+        if (!$this->auth->guard($guard)->user()) {
             throw new \Exception("No user could be created, not even a public user");
         }
 

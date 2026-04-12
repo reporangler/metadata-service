@@ -1,54 +1,42 @@
 <?php
-use RepoRangler\Entity\Repository;
-use RepoRangler\Entity\PackageGroup;
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It is a breeze. Simply tell Lumen the URIs it should respond to
-| and give it the Closure to call when that URI is requested.
-|
-*/
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DefaultController;
+use App\Http\Controllers\PackageController;
+use App\Http\Controllers\PackageGroupController;
+use App\Http\Controllers\RepositoryController;
 
-// Healthcheck for any monitoring software
-$router->get('/', 'DefaultController@healthz');
+Route::get('/', [DefaultController::class, 'healthz']);
+Route::options('/{path}', [DefaultController::class, 'cors'])->where('path', '.*');
 
-$router->group(['middleware' => ['cors']], function() use ($router) {
-    // Set the CORS options that we will allow web requests from (This doesn't affect composer/console clients)
-    $router->options('{path:.*}', 'DefaultController@cors');
+Route::middleware(['cors', 'auth:token'])->group(function () {
+    $repoPattern = '[a-z][a-z0-9\-\.]+';
+    $pgPattern = '[a-z][a-z0-9\-\.]+';
 
-    // Pass all requests through the auth layer
-    $router->group(['middleware' => ['auth:token']], function() use ($router) {
-        $router->group(['prefix' => 'package'], function() use ($router) {
-            $pattern = Repository::PATTERN;
+    // Package routes
+    Route::prefix('package')->group(function () use ($repoPattern) {
+        Route::get('/{repository}', [PackageController::class, 'packages'])->where('repository', $repoPattern);
+        Route::post('/{repository}', [PackageController::class, 'create'])->where('repository', $repoPattern);
+        Route::delete('/{repository}/{id}', [PackageController::class, 'deleteById'])->where(['repository' => $repoPattern, 'id' => '[0-9]+']);
+    });
 
-            $router->get("/{repository:$pattern}", 'PackageController@packages');
-            $router->post("/{repository:$pattern}", 'PackageController@create');
-        });
+    // Package group routes
+    Route::prefix('package-group')->group(function () use ($pgPattern) {
+        Route::get('/', [PackageGroupController::class, 'getList']);
+        Route::get('/{name}', [PackageGroupController::class, 'getByName'])->where('name', $pgPattern);
+        Route::get('/{id}', [PackageGroupController::class, 'getById'])->where('id', '[0-9]+');
+        Route::post('/', [PackageGroupController::class, 'create']);
+        Route::put('/', [PackageGroupController::class, 'update']);
+        Route::delete('/{id}', [PackageGroupController::class, 'deleteById'])->where('id', '[0-9]+');
+    });
 
-        $router->group(['prefix' => 'package-group'], function() use ($router) {
-            $pattern = PackageGroup::PATTERN;
-
-            $router->get('/',                   'PackageGroupController@getList');
-            $router->get("/{name:$pattern}",    'PackageGroupController@getByName');
-            $router->get('/{id:[0-9]+}',        'PackageGroupController@getById');
-            $router->post('/',                  'PackageGroupController@create');
-            $router->put('/',                   'PackageGroupController@update');
-            $router->delete('/{id:[0-9]+}',     'PackageGroupController@deleteById');
-        });
-
-        $router->group(['prefix' => 'repository'], function() use ($router) {
-            $pattern = Repository::PATTERN;
-
-            $router->get('/',                       'RepositoryController@getList');
-            $router->get('/{id:[0-9]+}',            'RepositoryController@getById');
-            $router->get("/{repository:$pattern}",  'RepositoryController@getByName');
-            $router->post('/',                      'RepositoryController@create');
-            $router->put('/{id:[0-9]+}',            'RepositoryController@update');
-            $router->delete('/{id:[0-9]+}',         'RepositoryController@deleteById');
-        });
+    // Repository routes
+    Route::prefix('repository')->group(function () use ($repoPattern) {
+        Route::get('/', [RepositoryController::class, 'getList']);
+        Route::get('/{id}', [RepositoryController::class, 'getById'])->where('id', '[0-9]+');
+        Route::get('/{repository}', [RepositoryController::class, 'getByName'])->where('repository', $repoPattern);
+        Route::post('/', [RepositoryController::class, 'create']);
+        Route::put('/{id}', [RepositoryController::class, 'update'])->where('id', '[0-9]+');
+        Route::delete('/{id}', [RepositoryController::class, 'deleteById'])->where('id', '[0-9]+');
     });
 });

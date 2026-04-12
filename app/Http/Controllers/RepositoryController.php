@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Model\Repository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Laravel\Lumen\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Routing\Controller as BaseController;
 
 class RepositoryController extends BaseController
 {
@@ -31,11 +32,13 @@ class RepositoryController extends BaseController
 
     public function create(Request $request)
     {
+        Gate::authorize('package-group-create');
+
         $schema = [
             'name' => 'required|regex:/^'.Repository::PATTERN.'$/i',
         ];
 
-        $data = $this->validate($request, $schema);
+        $data = $request->validate($schema);
 
         $repo = Repository::create(['name' => $data['name']]);
 
@@ -44,11 +47,13 @@ class RepositoryController extends BaseController
 
     public function update(Request $request, int $id)
     {
+        Gate::authorize('package-group-update');
+
         $schema = [
             'name' => 'required|regex:/^'.Repository::PATTERN.'$/i',
         ];
 
-        $data = $this->validate($request, $schema);
+        $data = $request->validate($schema);
 
         $repo = Repository::findOrFail($id);
 
@@ -60,18 +65,16 @@ class RepositoryController extends BaseController
 
     public function deleteById(Request $request, int $id)
     {
-        $repo = Repository::find($id);
+        Gate::authorize('package-group-remove');
 
-        $deleted = [];
+        $repo = Repository::findOrFail($id);
 
-        if ($repo){
-            $deleted[] = $repo->toArray();
-            $repo->delete();
-        }
+        $deleted[] = $repo->toArray();
+        $repo->delete();
 
         return new JsonResponse([
             'count' => count($deleted),
             'deleted' => $deleted
-        ], count($deleted) ? 200 : 404);
+        ]);
     }
 }

@@ -8,7 +8,17 @@ foreach(['APP_NAME', 'APP_PROTOCOL', 'APP_DOMAIN'] as $key){
 }
 
 return [
-    'debug' => env('APP_DEBUG', false),
+    'name' => env('APP_NAME', 'metadata'),
+    'env' => env('APP_ENV', 'production'),
+    'debug' => (bool) env('APP_DEBUG', false),
+    'url' => env('APP_URL', 'http://localhost'),
+    'timezone' => 'UTC',
+    'locale' => 'en',
+    'fallback_locale' => 'en',
+    'faker_locale' => 'en_US',
+    'key' => env('APP_KEY'),
+    'cipher' => 'AES-256-CBC',
+
     'protocol' => $required['APP_PROTOCOL'],
     'domain' => env('APP_DOMAIN', $required['APP_DOMAIN']),
 
@@ -17,4 +27,12 @@ return [
     'auth_base_url'     => env('APP_AUTH_URL',      "{$required['APP_PROTOCOL']}://auth.{$required['APP_DOMAIN']}"),
     'metadata_base_url' => env('APP_METADATA_URL',  "{$required['APP_PROTOCOL']}://metadata.{$required['APP_DOMAIN']}"),
     'storage_base_url'  => env('APP_STORAGE_URL',   "{$required['APP_PROTOCOL']}://storage.{$required['APP_DOMAIN']}"),
+
+    'providers' => \Illuminate\Support\ServiceProvider::defaultProviders()->merge([
+        App\Providers\AppServiceProvider::class,
+        App\Providers\AuthServiceProvider::class,
+        RepoRangler\Providers\AppServiceProvider::class,
+        RepoRangler\Providers\TokenServiceProvider::class,
+    ])->toArray(),
+    'aliases' => [],
 ];

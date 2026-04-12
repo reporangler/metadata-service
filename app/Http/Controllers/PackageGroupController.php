@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Model\PackageGroup;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Laravel\Lumen\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Routing\Controller as BaseController;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class PackageGroupController extends BaseController
@@ -32,13 +33,13 @@ class PackageGroupController extends BaseController
 
     public function create(Request $request): JsonResponse
     {
-        $request->user()->can('package-group-create');
+        Gate::authorize('package-group-create');
 
         $authSchema = [
             'name' => 'required|string',
         ];
 
-        $data = $this->validate($request,$authSchema);
+        $data = $request->validate($authSchema);
 
         $result = PackageGroup::where('name', $data['name'])->first();
 
@@ -55,14 +56,14 @@ class PackageGroupController extends BaseController
 
     public function update(Request $request): JsonResponse
     {
-        $request->user()->can('package-group-update');
+        Gate::authorize('package-group-update');
 
         $authSchema = [
             'id' => 'required|integer|min:1',
             'name' => 'required|string',
         ];
 
-        $data = $this->validate($request,$authSchema);
+        $data = $request->validate($authSchema);
 
         $packageGroup = PackageGroup::findOrFail($data['id']);
         $packageGroup->name = $data['name'];
@@ -73,7 +74,7 @@ class PackageGroupController extends BaseController
 
     public function deleteById(Request $request, int $id): JsonResponse
     {
-        $request->user()->can('package-group-delete');
+        Gate::authorize('package-group-remove');
 
         $packageGroup = PackageGroup::findOrFail($id);
 

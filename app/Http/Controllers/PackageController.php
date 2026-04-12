@@ -7,7 +7,7 @@ use App\Model\Repository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Laravel\Lumen\Routing\Controller as BaseController;
+use Illuminate\Routing\Controller as BaseController;
 
 class PackageController extends BaseController
 {
@@ -17,15 +17,26 @@ class PackageController extends BaseController
 
         $packageGroups = array_keys($user->package_groups);
 
-        $packages = Package::whereRepository($repository)->get();
+        $query = Package::whereRepository($repository);
 
-        return new JsonResponse($packages);
+        // Filter by user's accessible package groups if not admin
+        if (!$user->is_admin_user && !empty($packageGroups)) {
+            $query->whereIn('package_group', $packageGroups);
+        } elseif (!$user->is_admin_user && empty($packageGroups)) {
+            // Non-admin with no groups can only see public packages
+            $query->where('package_group', 'public');
+        }
+
+        $packages = $query->get();
+
+        return new JsonResponse([
+            'count' => count($packages),
+            'data' => $packages,
+        ]);
     }
 
     public function create(Request $request, string $repository): JsonResponse
     {
-        $user = Auth::guard('token')->user();
-
         $schema = [
             'name' => 'required|string',
             'version' => 'required|string',
@@ -33,7 +44,7 @@ class PackageController extends BaseController
             'definition' => 'required|array',
         ];
 
-        $data = $this->validate($request, $schema);
+        $data = $request->validate($schema);
 
         $attributes = [
             'name' => $data['name'],
@@ -55,5 +66,15 @@ class PackageController extends BaseController
         }
 
         return new JsonResponse($package);
+    }
+
+    public function deleteById(Request $request, string $repository, int $id): JsonResponse
+    {
+        $package = Package::whereRepository($repository)->where('id', $id)->firstOrFail();
+
+        $deleted = $package->toArray();
+        $package->delete();
+
+        return new JsonResponse(['deleted' => [$deleted]]);
     }
 }
