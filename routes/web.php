@@ -7,7 +7,10 @@ use App\Http\Controllers\PackageGroupController;
 use App\Http\Controllers\RepositoryController;
 
 Route::get('/', [DefaultController::class, 'healthz']);
-Route::options('/{path}', [DefaultController::class, 'cors'])->where('path', '.*');
+
+Route::middleware(['cors'])->group(function () {
+    Route::options('/{path}', [DefaultController::class, 'cors'])->where('path', '.*');
+});
 
 Route::middleware(['cors', 'auth:token'])->group(function () {
     $repoPattern = '[a-z][a-z0-9\-\.]+';
