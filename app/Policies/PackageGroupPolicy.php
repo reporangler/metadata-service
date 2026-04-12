@@ -5,19 +5,16 @@ class PackageGroupPolicy
 {
     public function create($user): bool
     {
-        error_log(__METHOD__);
-        return true;
+        return $user->is_admin_user === true;
     }
 
     public function update($user): bool
     {
-        error_log(__METHOD__);
-        return true;
+        return $user->is_admin_user === true;
     }
 
     public function remove($user): bool
     {
-        error_log(__METHOD__);
-        return true;
+        return $user->is_admin_user === true;
     }
 }
